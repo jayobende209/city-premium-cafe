@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"  rel="stylesheet">
+
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> 
+
+  <style>
+    /* Base Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    /* Header Styles */
+    .header {
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      height: 60px;
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    .logo img {
+      width: 100px;
+      vertical-align: middle;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .dropdown position-relative {
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #000;
+      min-width: 160px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      border-radius: 5px;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #046687;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 992px) {
+      .nav {
+        display: none;
+      }
+      .hamburger {
+        display: block;
+      }
+    }
+
+    /* Order Form Container */
+    .order-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .order-card {
+      display: flex;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      width: 90%;
+      max-width: 900px;
+      margin: 0 auto;
+      max-height: 800px;
+    }
+
+    .coffee-image {
+      width: 400px;
+      object-fit: cover;
+    }
+
+    .order-details {
+      padding: 30px;
+      flex: 1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .submit-btn {
+      background-color: #000;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+      background-color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    /* Floating Coffee Animation */
+    .coffee-animation {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 100px;
+      height: 150px;
+      z-index: 1000;
+    }
+
+    .coffee-cup {
+      position: absolute;
+      bottom: 0;
+      width: 80px;
+      height: 100px;
+      background: #fff;
+      border: 4px solid #333;
+      border-radius: 5px 5px 40px 40px;
+      overflow: hidden;
+    }
+
+    .coffee-liquid {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(to bottom, #6f4e37, #4a332d);
+      animation: fillCup 3s ease-in-out infinite;
+    }
+
+    .coffee-stream {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 50px;
+      background: linear-gradient(to bottom, transparent, #6f4e37);
+      animation: pourCoffee 3s ease-in-out infinite;
+    }
+
+    .steam {
+      position: absolute;
+      top: -20px;
+      left: 10px;
+      width: 8px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 20px;
+      filter: blur(5px);
+      animation: steam 2s ease-out infinite;
+    }
+
+    @keyframes fillCup {
+      0% { height: 0%; }
+      70% { height: 80%; }
+      100% { height: 80%; }
+    }
+
+    @keyframes pourCoffee {
+      0% { height: 0px; opacity: 0; }
+      20% { height: 50px; opacity: 1; }
+      70% { height: 50px; opacity: 1; }
+      100% { height: 0px; opacity: 0; }
+    }
+
+    @keyframes steam {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      50% { transform: translateY(-10px) scale(1.2); opacity: 0.5; }
+      100% { transform: translateY(-20px) scale(1.4); opacity: 0; }
+    }
+
+    /* Footer Styles */
+    .footer {
+      background-color: #000000;
+      color: white;
+      padding: 40px 20px;
+      margin-top: 50px;
+    }
+
+    .footer h3 {
+      color: #08aac6;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .footer p,
+    .footer ul li,
+    .footer a {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #ccc;
+    }
+
+    .social-links a {
+      color: white;
+      margin-right: 15px;
+      font-size: 20px;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .coffee-animation {
+        display: none !important;
+      }
+
+      .order-card {
+        flex-direction: column;
+      }
+
+      .coffee-image {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+
+<body style="background-color: #f5f5f5;">
+  <!-- Header -->
+  <header class="header d-flex align-items-center justify-content-between px-4 py-2 bg-dark text-white">
+    <!-- Logo -->
+    <div class="logo">
+      <a href="index.html"><img src="logo.png" alt="Banner" width="150"></a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="nav d-none d-md-flex">
+      <a href="index.html" class="text-white me-3">Home</a>
+      <a href="Galerry.html" class="text-white me-3">Gallery</a>
+      <div class="dropdown position-relative">
+        <a href="Contactus.html" class="text-white dropdown-toggle" data-bs-toggle="dropdown">Contact Us</a>
+        <ul class="dropdown-menu bg-dark border-0 shadow-sm rounded-3 mt-2">
+          <li><a class="dropdown-item text-white" href="location.html">Location</a></li>
+          <li><a class="dropdown-item text-white" href="order.html">Order</a></li>
+          <li><a class="dropdown-item text-white" href="Aboutus.html">About Us</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hamburger Button for Mobile -->
+    <button class="navbar-toggler d-md-none border-0" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="text-white fs-3">&#9776;</span>
+    </button>
+  </header>
+
+  <!-- Offcanvas Mobile Menu -->
+  <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="mobileMenu"
+    aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="mobileMenuLabel">City Premium Cafe</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body flex-column">
+      <a href="index.html" class="text-white mb-3">Home</a></li>
+      <a href="Galerry.html" class="text-white mb-3">Gallery</a></li>
+      <div class="dropdown w-100">
+        <a href="Contactus.html" class="text-white dropdown-toggle mb-3" data-bs-toggle="dropdown">Contact Us</a>
+        <ul class="dropdown-menu bg-dark border-0 shadow-sm rounded-3 mt-2">
+          <li><a class="dropdown-item text-white" href="location.html">Location</a></li>
+          <li><a class="dropdown-item text-white" href="order.html">Order</a></li>
+          <li><a class="dropdown-item text-white" href="Aboutus.html">About Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Section -->
+  <section class="order-container">
+    <div class="order-card">
+      <img src="coffee-cup.jpeg" alt="Coffee Image" class="coffee-image">
+      <div class="order-details">
+        <h2>Order Your Coffee</h2>
+
+        <!-- Step 1: Phone Number -->
+        <div id="phone-step" class="form-group">
+          <label for="phone">Phone Number:</label>
+          <input type="tel" id="phone" pattern="\d{11}" placeholder="08012345678" required>
+          <button type="button" id="continue-btn" class="submit-btn" style="margin-top:10px;">Continue</button>
+          <small style="color:#999;display:block;margin-top:8px;">Enter your phone number to proceed</small>
+        </div>
+
+        <!-- Step 2: Order Form Fields -->
+        <form id="orderForm" style="display:none;">
+          <button type="button" id="back-to-phone" class="submit-btn" style="background:#ccc;color:#222;margin-bottom:12px;">
+            Back
+          </button>
+          <div class="form-group">
+            <label>Phone Number:</label>
+            <input type="tel" id="readonlyPhone" readonly style="background:#f5f5f5;">
+          </div>
+          <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" min="1" value="1" required>
+          </div>
+          <div class="form-group">
+            <label for="flavor">Drink:</label>
+            <select id="flavor" required>
+              <option value="">Select a drink</option>
+              <optgroup label="Hot Drinks">
+                <option value="Espresso (single) +₦1000">Espresso (single) +₦1000</option>
+                <option value="Espresso (double) +₦1500">Espresso (double) +₦1500</option>
+                <option value="Flat White +₦1500">Flat White +₦1500</option>
+                <option value="Cappuccino (Medium) +₦2000">Cappuccino (Medium) +₦2000</option>
+                <option value="Cappuccino (Large) +₦2500">Cappuccino (Large) +₦2500</option>
+                <option value="Latte (Medium) +₦2200">Latte (Medium) +₦2200</option>
+                <option value="Latte (Large) +₦2700">Latte (Large) +₦2700</option>
+              </optgroup>
+              <optgroup label="Cold Drinks">
+                <option value="Iced Latte +₦2000">Iced Latte +₦2000</option>
+                <option value="Iced Americano +₦2000">Iced Americano +₦2000</option>
+                <option value="Caramel Iced Frappucino +₦4000">Caramel Iced Frappucino +₦4000</option>
+                <option value="Cocoa Iced Frappucino +₦4000">Cocoa Iced Frappucino +₦4000</option>
+              </optgroup>
+              <optgroup label="Other Beverages">
+                <option value="Water on Rocks +₦500">Water on Rocks +₦500</option>
+                <option value="Iced Lemonade +₦500">Iced Lemonade +₦500</option>
+                <option value="Orange Juice +₦700">Orange Juice +₦700</option>
+                <option value="Pineapple Juice +₦700">Pineapple Juice +₦700</option>
+                <option value="Mango Juice +₦700">Mango Juice +₦700</option>
+                <option value="Black Tea +₦700">Black Tea +₦700</option>
+                <option value="Green Tea +₦700">Green Tea +₦700</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="instructions">Special Instructions:</label>
+            <select id="instructions">
+              <option value="">None</option>
+              <option value="Add Cream">Add Cream</option>
+              <option value="Less Sugar">Less Sugar</option>
+              <option value="Extra Hot">Extra Hot</option>
+              <option value="No Sugar">No Sugar</option>
+              <option value="Iced">Iced</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="address">Delivery Location:</label>
+            <select id="address" required>
+              <option value="">Choose delivery location</option>
+              <optgroup label="Unilag">
+                <option>Jaja Hall</option>
+                <option>Mariere Hall</option>
+                <option>Moremi Hall</option>
+                <option>Main Library</option>
+                <option>Senate Building</option>
+              </optgroup>
+              <optgroup label="Ikeja">
+                <option>Ikeja Bus Stop</option>
+                <option>Allen Avenue</option>
+                <option>Ikeja City Mall</option>
+                <option>Airport Road</option>
+                <option>New African Shrine</option>
+              </optgroup>
+            </select>
+          </div>
+          <button type="submit" class="submit-btn">Add to Cart</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Floating Action Button (Cart) -->
+  <div id="cart-fab" class="position-fixed bottom-0 end-0 m-3 p-3 rounded-pill bg-dark text-white cursor-pointer shadow" style="z-index: 1000;">
+    Checkout <span id="cart-item-count" class="bg-danger text-white rounded-circle px-2 ms-1" style="font-size: 12px; display: none;">0</span>
+  </div>
+
+  <!-- Order Summary Iframe -->
+  <iframe id="order-summary-popup" src="about:blank" style="
+    display: none;
+    position: fixed;
+    bottom: 90px;
+    right: 30px;
+    width: 340px;
+    height: 350px;
+    border: none;
+    border-radius: 16px;
+    background: white;
+    z-index: 1001;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    overflow: auto;
+  "></iframe>
+
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-5 mb-3">
+          <h3 class="text-info">Our Mission</h3>
+          <p>To provide exceptional coffee experiences while fostering community connections through quality beverages and outstanding service.</p>
+        </div>
+        <div class="col-md-5 mb-3">
+          <h3 class="text-info">Our Vision</h3>
+          <p>To become the most beloved coffee destination, known for our commitment to quality, sustainability, and creating memorable moments.</p>
+        </div>
+      </div>
+
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-5 mb-3">
+          <h3 class="text-info">Contact Us</h3>
+          <ul class="list-unstyled text-white">
+            <li>📞 Phone: (234) 8144854795</li>
+            <li>✉️ Email: info@citypremiumcafe.com</li>
+            <li>🏢 Address: No 3 Sab Ojewale Street Gbagada, Lagos, Nigeria. 100001</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row justify-content-center mb-3">
+        <div class="col-md-5">
+          <h3 class="text-info mb-3">Follow Us</h3>
+          <div class="d-flex justify-content-center gap-3 fs-4">
+            <a href="#" class="text-white"><i class="fab fa-facebook"></i> Facebook</a>
+            <a href="#" class="text-white"><i class="fab fa-tiktok"></i> TikTok</a>
+            <a href="#" class="text-white"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="#" class="text-white"><i class="fab fa-linkedin"></i> LinkedIn</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center mt-3">
+        <div class="col-md-5">
+          <p class="mb-0">RC NO: 8517834</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Coffee Animation -->
+  <div class="coffee-animation">
+    <div class="coffee-cup">
+      <div class="coffee-liquid"></div>
+    </div>
+    <div class="coffee-stream"></div>
+    <div class="steam" style="left: 20px;"></div>
+    <div class="steam" style="left: 35px;"></div>
+    <div class="steam" style="left: 50px;"></div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> 
+
+  <!-- Custom Script -->
+  <script>
+    let cartItems = [];
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("cartItems");
+      if (saved) cartItems = JSON.parse(saved);
+      updateCartCounter();
+    });
+
+    function saveCart() {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    }
+
+    function updateCartCounter() {
+      const count = document.getElementById('cart-item-count');
+      const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+      count.textContent = totalItems;
+      count.style.display = totalItems > 0 ? 'inline-block' : 'none';
+    }
+
+    // Phone step logic
+    document.addEventListener('DOMContentLoaded', function () {
+      const phoneInput = document.getElementById('phone');
+      const continueBtn = document.getElementById('continue-btn');
+      const phoneStep = document.getElementById('phone-step');
+      const orderFields = document.getElementById('orderForm');
+      const readonlyPhone = document.getElementById('readonlyPhone');
+
+      const savedPhone = localStorage.getItem('savedPhone');
+      if (savedPhone) {
+        readonlyPhone.value = savedPhone;
+        phoneStep.style.display = 'none';
+        orderFields.style.display = 'block';
+      } else {
+        phoneStep.style.display = 'block';
+        orderFields.style.display = 'none';
+      }
+
+      continueBtn.onclick = function () {
+        const phone = phoneInput.value.trim();
+        const phonePattern = /^\d{11}$/;
+
+        if (!phonePattern.test(phone)) {
+          alert("Please enter a valid 11-digit Nigerian phone number.");
+          phoneInput.focus();
+          return;
+        }
+
+        localStorage.setItem('savedPhone', phone);
+        readonlyPhone.value = phone;
+        phoneStep.style.display = 'none';
+        orderFields.style.display = 'block';
+      };
+
+      document.getElementById('back-to-phone').onclick = function () {
+        orderFields.style.display = 'none';
+        phoneStep.style.display = 'block';
+        phoneInput.value = readonlyPhone.value;
+      };
+    });
+
+    // Add to cart logic
+    document.getElementById("orderForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const quantity = parseInt(document.getElementById("quantity").value);
+      const flavor = document.getElementById("flavor").value;
+      const instructions = document.getElementById("instructions").value;
+      const phone = document.getElementById("readonlyPhone").value;
+      const address = document.getElementById("address").value;
+
+      if (!flavor || quantity < 1 || !phone || !address) {
+        alert("Please fill all required fields.");
+        return;
+      }
+
+      const prices = {
+        "Espresso (single) +₦1000": 1000,
+        "Espresso (double) +₦1500": 1500,
+        "Flat White +₦1500": 1500,
+        "Cappuccino (Medium) +₦2000": 2000,
+        "Cappuccino (Large) +₦2500": 2500,
+        "Latte (Medium) +₦2200": 2200,
+        "Latte (Large) +₦2700": 2700,
+        "Iced Latte +₦2000": 2000,
+        "Iced Americano +₦2000": 2000,
+        "Caramel Iced Frappucino +₦4000": 4000,
+        "Cocoa Iced Frappucino +₦4000": 4000,
+        "Water on Rocks +₦500": 500,
+        "Iced Lemonade +₦500": 500,
+        "Orange Juice +₦700": 700,
+        "Pineapple Juice +₦700": 700,
+        "Mango Juice +₦700": 700,
+        "Black Tea +₦700": 700,
+        "Green Tea +₦700": 700
+      };
+
+      const basePrice = prices[flavor] * quantity;
+      const creamCost = instructions === "Add Cream" ? 500 * quantity : 0;
+      const totalPrice = basePrice + creamCost;
+
+      cartItems.push({ quantity, flavor, instructions, phone, address, totalPrice });
+      saveCart();
+      updateIframeCart();
+      updateCartCounter();
+      this.reset();
+    });
+
+    function updateIframeCart() {
+      const iframe = document.getElementById("order-summary-popup");
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      let html = `
+        <html>
+          <head>
+            <style>
+              body { margin: 0; padding: 16px; font-family: Arial, sans-serif; background: white; color: #333; }
+              h3 { margin-top: 0; font-size: 18px; color: #000; }
+              .item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+              .total { text-align: right; font-weight: bold; margin-top: 10px; color: #000; }
+              .empty { text-align: center; color: #999; }
+              .checkout-btn {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                margin-top: 15px;
+                background: #08aac6;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+              }
+              .checkout-btn:hover { background: #046687; }
+              .remove-item {
+                color: red;
+                cursor: pointer;
+                margin-left: 10px;
+                background: none;
+                border: none;
+                font-size: inherit;
+              }
+              .sticky-header {
+                position: sticky;
+                top: 0;
+                background: black;
+                color: white;
+                padding: 10px 0;
+                text-align: center;
+                z-index: 10;
+              }
+            </style>
+          </head>
+          <body>
+            <h3 class="sticky-header">Order Summary</h3>
+      `;
+
+      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      if (cartItems.length === 0) {
+        html += `<p class="empty">No items added to cart.</p>`;
+      } else {
+        let total = 0;
+        html += cartItems.map((item, index) => {
+          total += item.totalPrice;
+          return `
+            <div class="item">
+              <div><strong>${item.quantity}x</strong> ${item.flavor}</div>
+              <div>Instructions: ${item.instructions || 'None'}</div>
+              <div>Phone: ${item.phone || 'Not provided'}</div>
+              <div>Location: ${item.address || 'Not selected'}</div>
+              <button class="remove-item" onclick="parent.postMessage({type:'removeItem',index:${index}},'*')">Remove</button>
+            </div>
+          `;
+        }).join("");
+
+        html += `<div class="total">Total: ₦${total.toLocaleString()}</div>`;
+      }
+
+      html += `
+        <p style="color:blue;text-align:center;margin-top:15px;">City Premium Coffee: 3002576096 (Kuda Bank)</p>
+        <button class="checkout-btn" onclick="proceedToPayment()">Brew my Coffee!</button>
+        <script>
+          function proceedToPayment() {
+            window.parent.postMessage({ type: 'triggerPaymentMessage' }, '*');
+          }
+        <\/script>
+      </body></html>
+      `;
+
+      doc.open();
+      doc.write(html);
+      doc.close();
+    }
+
+    // FAB toggle
+    document.getElementById("cart-fab").addEventListener("click", () => {
+      const iframe = document.getElementById("order-summary-popup");
+      iframe.style.display = iframe.style.display === "block" ? "none" : "block";
+      updateIframeCart();
+    });
+
+    // Handle messages from iframe
+    window.addEventListener("message", (e) => {
+      if (e.data.type === "triggerPaymentMessage") {
+        const currentCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+        if (currentCartItems.length === 0) {
+          alert("Your cart is empty!");
+          return;
+        }
+
+        const phone = document.getElementById("readonlyPhone").value;
+        const deliveryLocation = document.getElementById("address").value;
+        let deliveryFee = 0;
+        const unilagLocations = ["Jaja Hall", "Mariere Hall", "Moremi Hall", "Main Library", "Senate Building"];
+        const ikejaLocations = ["Ikeja Bus Stop", "Allen Avenue", "Ikeja City Mall", "Airport Road", "New African Shrine"];
+
+        if (unilagLocations.includes(deliveryLocation)) {
+          deliveryFee = 200;
+        } else if (ikejaLocations.includes(deliveryLocation)) {
+          deliveryFee = 500;
+        }
+
+        const cartTotal = currentCartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+        const finalTotal = cartTotal + deliveryFee;
+        const orderItemsList = currentCartItems.map(item => `${item.quantity}x ${item.flavor}`).join(', ');
+
+        const apiDescription = `
+Customer: **${phone}**
+Order: **${orderItemsList}**
+Amount: **NGN ${finalTotal.toLocaleString()}**
+Location: **${deliveryLocation || 'Not Selected'}**
+        `;
+
+        fetch('https://citybet.pythonanywhere.com/orders',  {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: "Order",
+            description: apiDescription
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Order submitted:", data);
+          document.getElementById("order-summary-popup").style.display = "none";
+          localStorage.removeItem("cartItems");
+          cartItems = [];
+          updateIframeCart();
+          updateCartCounter();
+          alert("Thank you! Your order has been placed.");
+        })
+        .catch(err => {
+          console.error("Order failed:", err);
+          alert("Failed to place order. Please try again.");
+        });
+      } else if (e.data.type === "removeItem") {
+        let currentCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+        currentCartItems.splice(e.data.index, 1);
+        localStorage.setItem("cartItems", JSON.stringify(currentCartItems));
+        updateIframeCart();
+        updateCartCounter();
+      }
+    });
+
+    // Close iframe when clicking outside
+    window.addEventListener("click", (e) => {
+      const iframe = document.getElementById("order-summary-popup");
+      const fab = document.getElementById("cart-fab");
+      if (!fab.contains(e.target) && !iframe.contains(e.target) && iframe.style.display === "block") {
+        iframe.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>

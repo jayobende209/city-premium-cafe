@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+        .header {
+            background-color: black;
+            padding: 0px 0;
+            padding-bottom: 0px;
+            padding-top: 00px;
+            max-height: 50px;
+        }
+        .logo img {
+           width: 200px; /* Adjust the width as needed */
+           height: auto; /* Maintain aspect ratio */
+           padding: 20px;
+           margin: auto 0; /* Center vertically while keeping horizontal margins at 0 */
+           vertical-align: middle; /* Align with text baseline */
+           display: inline-block; /* Allow vertical alignment */
+           margin-left: auto; /* Push logo to the far right */
+           margin-right: 100px; /* Add gap between logo and other header elements */
+           gap: 100px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .nav {
+            display: flex;
+            justify-content: start;
+            padding: 0 20px;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 10px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #000000;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 10px;
+            max-height: 500px;
+        }
+        
+        .dropdown-content a {
+            color: rgb(255, 255, 255);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+            color: black;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: #046687;
+        }
+        .nav {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            width: 100%;
+        }
+
+        .nav a {
+            margin: 0 15px; /* Add some spacing between nav items */
+            text-align: center; /* Center the text within each nav item */
+        }
+
+        .dropdown {
+            text-align: center; /* Center dropdown text */
+        }
+
+        .dropdown-content {
+            left: 50%; /* Center dropdown menu */
+            transform: translateX(-50%);
+            text-align: center;
+        /* Align header text to the right */
+        .header {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .nav {
+            justify-content: flex-end;
+        }
+    </style>
+    
+</head>
+<body style="background-color: #f5f5f5;">
+    <header class="header">
+        <div class="logo"><a href="index.html"><img src="logo.png" alt="Banner"></a></div>
+        <nav class="nav">
+            <a href="index.html">Home</a>
+            <a href="Galerry.html">Gallery</a>
+            <div class="dropdown">
+                <a href="Contactus.html">Contact Us</a>
+                <div class="dropdown-content">
+                    <a href="location.html">Location</a>
+                    <a href="order.html">Order</a>
+                    <a href="Aboutus.html">About Us</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div style="margin-top: 20px; text-align: center; font-family;;"> 
+        <h2>Choose Your Payment Option</h2>
+        <p>Please make paymenta to any of the accounts below, once payment is successful, send us a payment recipt <br>to 08144854795 or email us on info@citypremiumcafe.com and your order would be on the way.</p>
+    </div>
+    </style>
+    
+</head>
+<body style="background-color: #f5f5f5;">
+    <style>
+        .card-container {
+            perspective: 1000px;
+            width: 400px;
+            height: 250px;
+            margin: 100px auto;
+            position: relative;
+            margin-top: 40px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            cursor: pointer;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .card.front {
+            background: linear-gradient(45deg, #3a6ee6, #0b35dc);
+            color: white;
+            z-index: 2;
+            padding: 20px;
+        }
+
+        .card.back {
+            background: linear-gradient(45deg, #4abd98, #0f9571);
+            color: white;
+            z-index: 2;
+            padding: 20px; 
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg) translateZ(15px);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-label {
+            font-size: 12px;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .card-value {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .card-header {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        .chip {
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #fce297, #b69741);
+            border-radius: 8px;
+            position: absolute;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+        }
+
+        .chip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -5px;
+            right: -5px;
+            height: 50%;
+            background: linear-gradient(0deg, #d0b15e, #fce297);
+            border-radius: 4px;
+            transform: translateY(-50%);
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const chip = document.createElement('div');
+                chip.className = 'chip';
+                card.appendChild(chip);
+            });
+        });
+    </script>
+
+    <div class="card-container">
+        <div class="card front">
+            <div class="card-content">
+                <h2 class="card-header">Account Details</h2>
+                <div>
+                    <div class="card-label">Account Number</div>
+                    <div class="card-value">6348248525</div>
+                </div>
+                <div>
+                    <div class="card-label">Account Name</div>
+                    <div class="card-value">City Premium Cafe</div>
+                </div>
+                <div>
+                    <div class="card-label">Bank Name</div>
+                    <div class="card-value">Moniepoin MFB</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card back">
+            <div class="card-content">
+                <h2 class="card-header">Account Details</h2>
+                <div>
+                    <div class="card-label">Account Number</div>
+                    <div class="card-value">6348248525</div>
+                </div>
+                <div>
+                    <div class="card-label">Account Name</div>
+                    <div class="card-value">City Premium Cafe</div>
+                </div>
+                <div>
+                    <div class="card-label">Bank Name</div>
+                    <div class="card-value">OPay Digital Services</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cards = document.querySelectorAll('.card');
+        let isFlipped = false;
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                if (!isFlipped) {
+                    cards[0].classList.add('flipped');
+                    setTimeout(() => {
+                        cards[1].style.zIndex = 2;
+                        cards[0].style.zIndex = 1;
+                    }, 400);
+                } else {
+                    cards[0].classList.remove('flipped');
+                    setTimeout(() => {
+                        cards[1].style.zIndex = 1;
+                        cards[0].style.zIndex = 2;
+                    }, 400);
+                }
+                isFlipped = !isFlipped;
+            });
+
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = -(x - centerX) / 20;
+                
+                card.style.transform = `${isFlipped ? 'rotateY(180deg)' : ''} rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = isFlipped ? 'rotateY(180deg)' : '';
+                card.style.transition = 'transform 0.5s ease';
+            });
+        });
+    </script>
+
+    
+
+    <script>
+        // Add subtle animation on hover
+        const card = document.querySelector('.card');
+        
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = -(x - centerX) / 20;
+            
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'rotateX(0) rotateY(0)';
+            card.style.transition = 'transform 0s ease';
+        });
+    </script>
+      <style>
+        .chat-box {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #000000;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-box:hover {
+            transform: translateY(-5px);
+            background-color: #333333;
+        }
+    </style>
+
+    <div class="chat-box">
+        Talk to us
+    </div>
+    <style>
+        .chat-popup {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            width: 300px;
+            height: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: #000000;
+            color: white;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-chat {
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 5px 0;
+        }
+
+        .bot-message {
+            background: #f0f0f0;
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background: #000000;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            background: #000000;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="chat-popup">
+        <div class="chat-header">
+            <span>Chat with us</span>
+            <span class="close-chat">&times;</span>
+        </div>
+        <div class="chat-messages">
+            <div class="message bot-message">Hello! How can I help you today?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Type your message...">
+            <button>Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.chat-box').addEventListener('click', () => {
+            document.querySelector('.chat-popup').style.display = 'flex';
+        });
+
+        document.querySelector('.close-chat').addEventListener('click', () => {
+            document.querySelector('.chat-popup').style.display = 'none';
+        });
+
+        const chatMessages = document.querySelector('.chat-messages');
+        const chatInput = document.querySelector('.chat-input input');
+        const sendButton = document.querySelector('.chat-input button');
+
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function getBotResponse(message) {
+            const responses = {
+                'hello': 'Hi there! How can I assist you today?',
+                'hi': 'Hello! How can I help you?',
+                'hours': 'We are open Monday to Friday 7am-8pm, Saturday and Sunday 8am-6pm.',
+                'location': 'We are located at 123 Coffee Street, Downtown.',
+                'menu': 'You can check our full menu on our website under the Menu section.',
+                'reservation': 'You can make a reservation by calling us at (555) 123-4567.',
+                'default': "I'm not sure about that. Would you like to speak with a human representative?",
+                'payment': 'Please make payments to the account displayed below 6348 2485 25 and send a confirmation with your receipt to us so your delivery can get on the GO. NOTE avoid the last 6 zeros in the displayed account number E.g (000000)',
+                'delivery': 'Your delivery will be on the way in 30 minutes',
+                'order': 'You can order by calling us at 08144854795',
+                'contact': 'You can contact us at 08144854795',
+                'address': 'We are located at No 3 Sab Ojewale Street Gbagada, Lagos, Nigeria.',
+                'wifi': 'Yes, we offer free WiFi to our customers.',
+                'parking': 'Yes, we have free parking space available.',
+                'reservation': 'You can make a reservation by calling us at 08144854795.',
+                'opening': 'We are open Monday to Friday 7am-8pm, Saturday and Sunday 8am-6pm.',
+                'closing': 'We close at 8pm on weekdays and 6pm on weekends.',  
+                'about': 'We are a team of coffee enthusiasts who are dedicated to providing the best coffee experience to our customers.',
+                'aboutus': 'We are a team of coffee enthusiasts who are dedicated to providing the best coffee experience to our customers.',
+                'aboutus': 'We are a team of coffee enthusiasts who are dedicated to providing the best coffee experience to our customers.',
+                'aboutus': 'We are a team of coffee enthusiasts who are dedicated to providing the best coffee experience to our customers.',
+                'aboutus': 'We are a team of coffee enthusiasts who are dedicated to providing the best coffee experience to our customers.',
+                'aboutus': 'We are a team of coffee enthusiasts who are dedicated to providing the best coffee experience to our customers.',   
+                'what on your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                'what is your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                'what is in your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                'what is in your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                'what is in your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                'what is in your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',    
+                'what is in your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                'what is in your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                'what is in your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                'what is in your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                'what is in your menu': 'We have a wide range of coffee and tea options, including our signature blends and seasonal specials.',
+                
+                 
+            };
+
+            message = message.toLowerCase();
+            for (let key in responses) {
+                if (message.includes(key)) {
+                    return responses[key];
+                }
+            }
+            return responses.default;
+        }
+
+        function handleMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                chatInput.value = '';
+                
+                // Simulate bot typing
+                setTimeout(() => {
+                    const botResponse = getBotResponse(message);
+                    addMessage(botResponse);
+                }, 1000);
+            }
+        }
+
+        sendButton.addEventListener('click', handleMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleMessage();
+            }
+        });
+    </script>
+<style>
+    .footer {
+        width: 100%;
+        background-color: #000000;
+        color: white;
+        padding: 40px 0;
+        margin-top: 50px;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        padding: 0 20px;
+    }
+
+    .footer-section {
+        margin-bottom: 20px;
+    }
+
+    .footer-section h3 {
+        color: #08aac6;
+        font-size: 18px;
+        margin-bottom: 15px;
+        font-family: Arial, sans-serif;
+    }
+
+    .footer-section p {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #ccc;
+    }
+
+    .social-links a {
+        color: white;
+        margin-right: 15px;
+        font-size: 20px;
+        text-decoration: none;
+    }
+
+    .social-links a:hover {
+        color: #ddd;
+    }
+
+    .contact-info {
+        list-style: none;
+        padding: 0;
+    }
+
+    .contact-info li {
+        margin-bottom: 10px;
+        color: #ccc;
+    }
+</style>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Our Mission</h3>
+            <p>To provide exceptional coffee experiences while fostering community connections through quality beverages and outstanding service.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Our Vision</h3>
+            <p>To become the most beloved coffee destination, known for our commitment to quality, sustainability, and creating memorable moments.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Contact Us</h3>
+            <ul class="contact-info">
+                <li>📞 Phone: (234) 8144854795</li>
+                <li>✉️ Email: info@citypremiumcafe.com</li>
+                <li>🏢 Address: No 3 Sab Ojewale Street Gbagada</li>
+                <li>Lagos, Nigeria. 100001 </li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Follow Us</h3>
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=61575524349329" target="_blank"><i class="fab fa-facebook"></i> Facebook</a><br>
+                <a href="https://www.tiktok.com/@city.cafe8?_t=ZM-8wQtmDxooY2&_r=1#" target="_blank"><i class="fab fa-tiktok"></i> Tiktok</a><br>
+                <a href="https://www.instagram.com/citypremiumcafe/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a><br>
+                <a href="https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile#" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a> 
+                </script>
+<style>
+    .footer {
+        width: 100%;
+        background-color: #000000;
+        color: white;
+        padding: 40px 0;
+        margin-top: 50px;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        padding: 0 20px;
+    }
+
+    .footer-section {
+        margin-bottom: 20px;
+    }
+
+    .footer-section h3 {
+        color: #08aac6;
+        font-size: 18px;
+        margin-bottom: 15px;
+        font-family: Arial, sans-serif;
+    }
+
+    .footer-section p {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #ccc;
+    }
+
+    .social-links a {
+        color: white;
+        margin-right: 15px;
+        font-size: 20px;
+        text-decoration: none;
+    }
+
+    .social-links a:hover {
+        color: #ddd;
+    }
+
+    .contact-info {
+        list-style: none;
+        padding: 0;
+    }
+
+    .contact-info li {
+        margin-bottom: 10px;
+        color: #ccc;
+    }
+</style>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Our Mission</h3>
+            <p>To provide exceptional coffee experiences while fostering community connections through quality beverages and outstanding service.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Our Vision</h3>
+            <p>To become the most beloved coffee destination, known for our commitment to quality, sustainability, and creating memorable moments.</p>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Contact Us</h3>
+            <ul class="contact-info">
+                <li>📞 Phone: (234) 8144854795</li>
+                <li>✉️ Email: info@citypremiumcafe.com</li>
+                <li>🏢 Address: No 3 Sab Ojewale Street Gbagada</li>
+                <li>Lagos, Nigeria. 100001 </li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Follow Us</h3>
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=61575524349329" target="_blank"><i class="fab fa-facebook"></i> Facebook</a><br>
+                <a href="https://www.tiktok.com/@city.cafe8?_t=ZM-8wQtmDxooY2&_r=1#" target="_blank"><i class="fab fa-tiktok"></i> Tiktok</a><br>
+                <a href="https://www.instagram.com/citypremiumcafe/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a><br>
+                <a href="https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile#" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a> 
+                <li>RC NO:8517834</li>
+            </div>
+        </div>
+        <style>
+       
+            </div>
+        </div>
+        <style>
+            .coffee-animation {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                width: 100px;
+                height: 150px;
+                z-index: 1000;
+            }
+        
+            .coffee-cup {
+                position: absolute;
+                bottom: 0;
+                width: 80px;
+                height: 100px;
+                background: #fff;
+                border: 4px solid #333;
+                border-radius: 5px 5px 40px 40px;
+                overflow: hidden;
+            }
+        
+            .coffee-liquid {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 0%;
+                background: linear-gradient(to bottom, #6f4e37, #4a332d);
+                animation: fillCup 3s ease-in-out infinite;
+            }
+        
+            .coffee-stream {
+                position: absolute;
+                top: -50px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 8px;
+                height: 50px;
+                background: linear-gradient(to bottom, transparent, #6f4e37);
+                animation: pourCoffee 3s ease-in-out infinite;
+            }
+        
+            .steam {
+                position: absolute;
+                top: -20px;
+                left: 10px;
+                width: 8px;
+                height: 20px;
+                background: rgba(255, 255, 255, 0.5);
+                border-radius: 20px;
+                filter: blur(5px);
+                animation: steam 2s ease-out infinite;
+            }
+        
+            @keyframes fillCup {
+                0% { height: 0%; }
+                70% { height: 80%; }
+                100% { height: 80%; }
+            }
+        
+            @keyframes pourCoffee {
+                0% { height: 0px; opacity: 0; }
+                20% { height: 50px; opacity: 1; }
+                70% { height: 50px; opacity: 1; }
+                100% { height: 0px; opacity: 0; }
+            }
+        
+            @keyframes steam {
+                0% { transform: translateY(0) scale(1); opacity: 0; }
+                50% { transform: translateY(-10px) scale(1.2); opacity: 0.5; }
+                100% { transform: translateY(-20px) scale(1.4); opacity: 0; }
+            }
+        </style>
+        
+        <div class="coffee-animation">
+            <div class="coffee-cup">
+                <div class="coffee-liquid"></div>
+            </div>
+            <div class="coffee-stream"></div>
+            <div class="steam" style="left: 20px; animation-delay: 0.2s;"></div>
+            <div class="steam" style="left: 35px; animation-delay: 0.6s;"></div>
+            <div class="steam" style="left: 50px; animation-delay: 0.4s;"></div>
+        </div>
+        
+        <script>
+            // Add subtle random movement to make it more realistic
+            document.addEventListener('DOMContentLoaded', function() {
+                const steam = document.querySelectorAll('.steam');
+                
+                function addRandomMovement(element) {
+                    setInterval(() => {
+                        const randomX = (Math.random() - 0.5) * 10;
+                        element.style.transform = `translateX(${randomX}px) translateY(-20px) scale(1.4)`;
+                    }, 100);
+                }
+        
+                steam.forEach(s => addRandomMovement(s));
+            });
+        </script>
+        <style>
+            .card-container {
+                margin-bottom: 100px;
+            }
+        </style>
+        <style>
+            .coffee-bean {
+                position: fixed;
+                width: 20px;
+                height: 12px;
+                background: rgba(83, 52, 27, 0.5);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: -1;
+            }
+
+            .coffee-bean::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 80%;
+                height: 2px;
+                background: rgba(63, 32, 7, 0.5);
+                transform: translate(-50%, -50%);
+            }
+        </style>
+
+        <script>
+            function createCoffeeBean() {
+                const bean = document.createElement('div');
+                bean.className = 'coffee-bean';
+                
+                // Random starting position
+                bean.style.left = Math.random() * window.innerWidth + 'px';
+                bean.style.top = Math.random() * window.innerHeight + 'px';
+                
+                // Random rotation
+                const rotation = Math.random() * 360;
+                bean.style.transform = `rotate(${rotation}deg)`;
+                
+                document.body.appendChild(bean);
+
+                // Animation
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1 + Math.random() * 2;
+                let x = parseFloat(bean.style.left);
+                let y = parseFloat(bean.style.top);
+
+                function animate() {
+                    x += Math.cos(angle) * speed;
+                    y += Math.sin(angle) * speed;
+                    
+                    // Wrap around screen edges
+                    if (x > window.innerWidth) x = 0;
+                    if (x < 0) x = window.innerWidth;
+                    if (y > window.innerHeight) y = 0;
+                    if (y < 0) y = window.innerHeight;
+
+                    bean.style.left = x + 'px';
+                    bean.style.top = y + 'px';
+                    
+                    requestAnimationFrame(animate);
+                }
+
+                animate();
+            }
+
+            // Create multiple coffee beans
+            for (let i = 0; i < 20; i++) {
+                createCoffeeBean();
+            }
+        </script>
+        <script>
+            // Card flip animation
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'rotateY(10deg) translateZ(20px)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'rotateY(0) translateZ(0)';
+                });
+            });
+
+            // Smooth scroll animation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Add fade-in animation for content
+            function fadeInContent() {
+                const elements = document.querySelectorAll('.card-container, .card-content, h2, p');
+                elements.forEach((element, index) => {
+                    element.style.opacity = '0';
+                    element.style.transform = 'translateY(20px)';
+                    element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }, index * 200);
+                });
+            }
+
+            // Run fade-in animation on page load
+            window.addEventListener('load', fadeInContent);
+
+            // Add hover effects for buttons and interactive elements
+            const interactiveElements = document.querySelectorAll('button, .card, .nav a');
+            interactiveElements.forEach(element => {
+                element.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+                
+                element.addEventListener('mouseenter', () => {
+                    element.style.transform = 'scale(1.05)';
+                    element.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    element.style.transform = 'scale(1)';
+                    element.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                });
+            });
+
+            // Add parallax scrolling effect
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const parallaxElements = document.querySelectorAll('.card-container');
+                
+                parallaxElements.forEach(element => {
+                    const speed = 0.5;
+                    element.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+
+            // Clean up animations on page unload
+            window.addEventListener('beforeunload', () => {
+                const animatedElements = document.querySelectorAll('.coffee-bean, .card');
+                animatedElements.forEach(element => {
+                    element.remove();
+                });
+            });
+        </script>

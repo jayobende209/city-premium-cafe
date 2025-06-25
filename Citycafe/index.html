@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"  rel="stylesheet">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">  
+  <style>
+    /* Base Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    /* Header Styles */
+    .header {
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      height: 60px;
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    .logo img {
+      width: 150px;
+      vertical-align: middle;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #000;
+      min-width: 160px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      border-radius: 5px;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #046687;
+    }
+
+    .navbar-toggler {
+      display: none;
+    }
+
+    @media (max-width: 992px) {
+      .nav {
+        display: none;
+      }
+      .navbar-toggler {
+        display: block;
+      }
+    }
+
+    /* About Section */
+    .about-section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .about-section h2 {
+      margin-bottom: 40px;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .feature {
+      flex: 1 1 300px;
+      max-width: 300px;
+      text-align: center;
+    }
+
+    .feature h5 {
+      margin-bottom: 10px;
+      color: #08aac6;
+    }
+
+    .best-sellers {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .best-sellers h2 {
+      margin-bottom: 40px;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #000000;
+      color: white;
+      padding: 40px 20px;
+      margin-top: 50px;
+    }
+
+    .footer h3 {
+      color: #08aac6;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .footer p,
+    .footer ul li,
+    .footer a {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #ccc;
+    }
+
+    .footer .social-links a {
+      color: white;
+      margin-right: 15px;
+      font-size: 20px;
+      text-decoration: none;
+    }
+
+    /* Coffee Animation */
+    .coffee-animation {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 100px;
+      height: 150px;
+      z-index: 1000;
+    }
+
+    .coffee-cup {
+      position: absolute;
+      bottom: 0;
+      width: 80px;
+      height: 100px;
+      background: #fff;
+      border: 4px solid #333;
+      border-radius: 5px 5px 40px 40px;
+      overflow: hidden;
+    }
+
+    .coffee-liquid {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(to bottom, #6f4e37, #4a332d);
+      animation: fillCup 3s ease-in-out infinite;
+    }
+
+    .coffee-stream {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 50px;
+      background: linear-gradient(to bottom, transparent, #6f4e37);
+      animation: pourCoffee 3s ease-in-out infinite;
+    }
+
+    .steam {
+      position: absolute;
+      top: -20px;
+      left: 10px;
+      width: 8px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 20px;
+      filter: blur(5px);
+      animation: steam 2s ease-out infinite;
+    }
+
+    @keyframes fillCup {
+      0% { height: 0%; }
+      70% { height: 80%; }
+      100% { height: 80%; }
+    }
+
+    @keyframes pourCoffee {
+      0% { height: 0px; opacity: 0; }
+      20% { height: 50px; opacity: 1; }
+      70% { height: 50px; opacity: 1; }
+      100% { height: 0px; opacity: 0; }
+    }
+
+    @keyframes steam {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      50% { transform: translateY(-10px) scale(1.2); opacity: 0.5; }
+      100% { transform: translateY(-20px) scale(1.4); opacity: 0; }
+    }
+
+    /* Chat Box */
+    .chat-box {
+      z-index: 1000;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #000;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 50px;
+      display: none;
+    }
+
+    @media (min-width: 992px) {
+      .chat-box {
+        display: block;
+      }
+    }
+
+    .chat-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .chat-popup {
+      display: none;
+    }
+  </style>
+</head>
+<body style="background-color: #f5f5f5;">
+  <!-- Header -->
+  <header class="header d-flex align-items-center justify-content-between px-4 py-2 bg-dark text-white">
+    <!-- Logo -->
+    <div class="logo">
+      <a href="index.html"><img src="logo.png" alt="Banner" width="150"></a>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="nav d-none d-md-flex">
+      <a href="index.html" class="text-white me-3">Home</a>
+      <a href="Galerry.html" class="text-white me-3">Gallery</a>
+      <a href="Contactus.html" class="text-white me-3">Contact Us</a>
+      <div class="dropdown position-relative">
+        <span class="text-white dropdown-toggle" data-bs-toggle="dropdown">Menu</span>
+        <ul class="dropdown-menu bg-dark border-0 shadow-sm rounded-3 mt-2">
+          <li><a class="dropdown-item text-white" href="location.html">Location</a></li>
+          <li><a class="dropdown-item text-white" href="order.html">Order</a></li>
+          <li><a class="dropdown-item text-white" href="Aboutus.html">About Us</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hamburger Button for Mobile -->
+    <button class="navbar-toggler d-md-none border-0" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="text-white fs-3">&#9776;</span>
+    </button>
+  </header>
+
+  <!-- Offcanvas Mobile Menu -->
+  <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="mobileMenu"
+       aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="mobileMenuLabel">City Premium Cafe</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body flex-column">
+      <a href="index.html" class="text-white text-decoration-none d-block py-2">Home</a>
+      <a href="order.html" class="text-white text-decoration-none d-block py-2">Order</a>
+      <a href="Galerry.html" class="text-white text-decoration-none d-block py-2">Gallery</a>
+      <a href="Contactus.html" class="text-white text-decoration-none d-block py-2">Contact Us</a>
+      <a href="location.html" class="text-white text-decoration-none d-block py-2">Location</a>
+      <a href="Aboutus.html" class="text-white text-decoration-none d-block py-2">About Us</a>
+    </div>
+  </div>
+
+  <!-- Carousel Banner -->
+  <div id="bannerCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="banner1.jpg" class="d-block w-100" alt="Banner 1">
+        <div class="carousel-caption d-none d-md-block">
+          <h3>Our Baristas Are the Best</h3>
+          <p>Expert baristas crafting every cup with passion and precision...</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="banner2.jpg" class="d-block w-100" alt="Banner 2">
+        <div class="carousel-caption d-none d-md-block">
+          <h3>Premium Coffee Beans</h3>
+          <p>Crafted with passion, carefully processed to achieve the highest quality...</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="banner3.jpg" class="d-block w-100" alt="Banner 3">
+        <div class="carousel-caption d-none d-md-block">
+          <h3>A Brand New Coffee Experience</h3>
+          <p>Elevate your coffee moments with us—because great coffee should be unforgettable!</p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <h2 class="mb-4">Get to Know Our Brand</h2>
+    <div class="features">
+      <div class="feature">
+        <h5>Our Story</h5>
+        <p>Founded with passion and dedication, City Cafe has been serving premium coffee since 2025...</p>
+      </div>
+      <div class="feature">
+        <h5>Our Coffee</h5>
+        <p>We source only the finest coffee beans from sustainable farms worldwide...</p>
+      </div>
+      <div class="feature">
+        <h5>Our Promise</h5>
+        <p>Quality and consistency are at the heart of everything we do...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Best Sellers -->
+  <section class="best-sellers">
+    <h2 class="mb-4">Our Best Sellers</h2>
+    <div class="features">
+      <div class="feature">
+        <h5>Cappuccino</h5>
+        <p>A creamy and frothy blend of espresso and steamed milk, topped with a dusting of cocoa powder...</p>
+      </div>
+      <div class="feature">
+        <h5>Americano</h5>
+        <p>A refreshing and bold blend of espresso and hot water, offering a smooth and full-bodied taste...</p>
+      </div>
+      <div class="feature">
+        <h5>Latte</h5>
+        <p>A creamy and frothy blend of espresso and steamed milk, topped with a dusting of cocoa powder...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-5 mb-3">
+          <h3 class="text-info">Our Mission</h3>
+          <p>To provide exceptional coffee experiences while fostering community connections through quality beverages and outstanding service.</p>
+        </div>
+        <div class="col-md-5 mb-3">
+          <h3 class="text-info">Our Vision</h3>
+          <p>To become the most beloved coffee destination, known for our commitment to quality, sustainability, and creating memorable moments.</p>
+        </div>
+      </div>
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-5 mb-3">
+          <h3 class="text-info">Contact Us</h3>
+          <ul class="list-unstyled text-white">
+            <li>📞 Phone: (234) 8144854795</li>
+            <li>✉️ Email: info@citypremiumcafe.com</li>
+            <li>🏢 Address: No 3 Sab Ojewale Street Gbagada, Lagos, Nigeria. 100001</li>
+          </ul>
+        </div>
+      </div>
+      <div class="row justify-content-center mb-3">
+        <div class="col-md-5">
+          <h3 class="text-info mb-3">Follow Us</h3>
+          <div class="d-flex justify-content-center gap-3 fs-4">
+            <a href="https://www.facebook.com/profile.php?id=61575524349329" target="_blank" class="text-white">
+              <i class="fab fa-facebook"></i> Facebook
+            </a>
+            <a href="https://www.tiktok.com/@city.cafe8?_t=ZM-8wQtmDxooY2&_r=1#" target="_blank" class="text-white">  
+              <i class="fab fa-tiktok"></i> TikTok
+            </a>
+            <a href="https://www.instagram.com/citypremiumcafe/"   target="_blank" class="text-white">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile#" target="_blank" class="text-white">  
+              <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center mt-3">
+        <div class="col-md-5">
+          <p class="mb-0">RC NO: 8517834</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Coffee Animation -->
+  <div class="coffee-animation">
+    <div class="coffee-cup">
+      <div class="coffee-liquid"></div>
+    </div>
+    <div class="coffee-stream"></div>
+    <div class="steam" style="left: 20px; animation-delay: 0.2s;"></div>
+    <div class="steam" style="left: 35px; animation-delay: 0.6s;"></div>
+    <div class="steam" style="left: 50px; animation-delay: 0.4s;"></div>
+  </div>
+
+  <!-- Chat Widget -->
+  <div class="chat-box">Talk to us</div>
+  <div class="chat-popup position-fixed bottom-0 end-0 m-5 bg-white shadow rounded overflow-hidden d-none"
+       style="width: 300px; height: 400px;">
+    <div class="chat-header d-flex justify-content-between align-items-center bg-dark text-white p-3">
+      <span>Chat with us</span>
+      <span class="close-chat text-white fs-4">&times;</span>
+    </div>
+    <div class="chat-messages p-3 overflow-auto" style="height: 300px;"></div>
+    <div class="chat-input d-flex p-3 border-top">
+      <input type="text" placeholder="Type your message..." class="form-control me-2">
+      <button class="btn btn-primary">Send</button>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> 
+
+  <!-- Custom JavaScript -->
+  <script>
+    // Wait for DOM to load
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          const bsOffcanvas = bootstrap.Offcanvas.getInstance(mobileMenu);
+          if (bsOffcanvas) {
+            bsOffcanvas.hide();
+          }
+        });
+      });
+
+      // Chat widget logic
+      document.querySelector('.chat-box').addEventListener('click', () => {
+        document.querySelector('.chat-popup').classList.remove('d-none');
+      });
+      document.querySelector('.close-chat').addEventListener('click', () => {
+        document.querySelector('.chat-popup').classList.add('d-none');
+      });
+
+      const chatMessages = document.querySelector('.chat-messages');
+      const chatInput = document.querySelector('.chat-input input');
+      const sendButton = document.querySelector('.chat-input button');
+
+      function addMessage(message, isUser = false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${isUser ? 'user-message' : 'bot-message'} mb-2`;
+        msgDiv.textContent = message;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function getBotResponse(message) {
+        const responses = {
+          'hello': 'Hi there! How can I assist you today?',
+          'hi': 'Hello! How can I help you?',
+          'hours': 'We are open Monday to Friday 7am-8pm, Saturday and Sunday 8am-6pm.',
+          'location': 'We are located at 123 Coffee Street, Downtown.',
+          'menu': 'You can check our full menu on our website under the Menu section.',
+          'reservation': 'You can make a reservation by calling us at (555) 123-4567.',
+          'default': "I'm not sure about that. Would you like to speak with a human representative?"
+        };
+        message = message.toLowerCase();
+        for (let key in responses) {
+          if (message.includes(key)) return responses[key];
+        }
+        return responses.default;
+      }
+
+      function handleMessage() {
+        const message = chatInput.value.trim();
+        if (message) {
+          addMessage(message, true);
+          chatInput.value = '';
+          setTimeout(() => {
+            const botResponse = getBotResponse(message);
+            addMessage(botResponse);
+          }, 1000);
+        }
+      }
+
+      sendButton.addEventListener('click', handleMessage);
+      chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleMessage();
+      });
+
+      // Coffee animation logic
+      document.querySelectorAll('.steam').forEach((s, i) => {
+        setInterval(() => {
+          s.style.transform = `translateX(${Math.random() * 10 - 5}px) translateY(-${Math.random() * 10 + 10}px) scale(1.4)`;
+        }, 100);
+      });
+    });
+  </script>
+</body>
+</html>

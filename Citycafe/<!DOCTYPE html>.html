@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    .order-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px;
+    }
+
+    .order-card {
+      display: flex;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      width: 800px;
+    }
+
+    .coffee-image {
+      width: 400px;
+      object-fit: cover;
+    }
+
+    .order-details {
+      padding: 30px;
+      flex: 1;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    input[type="number"], select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .submit-btn {
+      background-color: #000;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .cart-icon {
+      position: absolute;
+      top: 100px;
+      right: 30px;
+      background: #03b2a4;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      background-image: url('cart-icon.png');
+      background-size: 20px;
+      background-position: center;
+      background-repeat: no-repeat;
+      width: 20px;
+      height: 20px;
+    }
+
+    #cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: rgb(1, 109, 117);
+      color: rgb(255, 255, 255);
+      border-radius: 50%;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+
+    .cart-preview {
+      display: none;
+      position: absolute;
+      right: 40px;
+      top: 40px;
+      background: white;
+      border: 1px solid #dddddd;
+      border-radius: 4px;
+      padding: 10px;
+      min-width: 250px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+      color: #000000;
+      text-align: ;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid #000000;
+      font-color: #000000;
+    }
+
+    .remove-item {
+      color: red;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .cart-preview-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #000000;
+    }
+
+    .cart-preview-total {
+      font-weight: bold;
+    }
+
+    .checkout-btn {
+      background-color: #000000;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .checkout-btn:hover {
+      background-color: #333333;
+    }
+  </style>
+</head>
+<body>
+
+<div class="order-container">
+  <div class="order-card">
+    <img src="coffee-cup.jpeg" alt="Coffee Image" class="coffee-image">
+    <div class="order-details">
+      <h2>Order Your Coffee</h2>
+      <form id="orderForm">
+        <div class="form-group">
+          <label for="quantity">Quantity:</label>
+          <input type="number" id="quantity" min="1" value="1" required>
+        </div>
+        <div class="form-group">
+          <label for="flavor">Flavor:</label>
+          <select id="flavor" required>
+            <option value="">Select a flavor</option>
+            <option value="espresso">Espresso</option>
+            <option value="latte">Latte</option>
+            <option value="cappuccino">Cappuccino</option>
+            <option value="mocha">Mocha</option>
+            <option value="americano">Americano</option>
+          </select>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="creamy">
+          <label for="creamy">Add Cream</label>
+        </div>
+        <button type="submit" class="submit-btn">Add to Cart</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Shopping Cart Icon -->
+<div class="cart-icon" id="cart-icon" draggable="true">
+  <i class="fas fa-shopping-cart"></i>
+  <span id="cart-count">0</span>
+  <!-- Cart Preview -->
+  <div id="cart-preview" class="cart-preview">
+    <div id="cart-items-preview"></div>
+    <div class="cart-preview-footer">
+      <button class="checkout-btn">Checkout</button>
+      <div class="cart-preview-total">Total: <span id="cart-preview-amount">₦0</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const prices = {
+    espresso: 1000,
+    latte: 1000,
+    cappuccino: 1000,
+    mocha: 1000,
+    americano: 1000
+  };
+
+  let cartItems = [];
+
+  const quantityInput = document.getElementById('quantity');
+  const flavorSelect = document.getElementById('flavor');
+  const creamyCheckbox = document.getElementById('creamy');
+  const cartItemsPreview = document.getElementById('cart-items-preview');
+  const cartCount = document.getElementById('cart-count');
+  const cartPreviewAmount = document.getElementById('cart-preview-amount');
+
+  // Add to cart
+  document.getElementById('orderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const quantity = parseInt(quantityInput.value);
+    const flavor = flavorSelect.value;
+    const isCreamy = creamyCheckbox.checked;
+
+    if (!flavor || quantity < 1) {
+      alert('Please select a valid flavor and quantity.');
+      return;
+    }
+
+    const basePrice = prices[flavor] * quantity;
+    const creamCost = isCreamy ? 500 * quantity : 0;
+    const totalPrice = basePrice + creamCost;
+
+    const item = {
+      id: Date.now(),
+      quantity,
+      flavor,
+      isCreamy,
+      totalPrice
+    };
+
+    cartItems.push(item);
+    updateCartDisplay();
+    this.reset();
+  });
+
+  // Update cart UI
+  function updateCartDisplay() {
+    cartItemsPreview.innerHTML = '';
+    let total = 0;
+
+    cartItems.forEach(item => {
+      total += item.totalPrice;
+
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'cart-item';
+      itemDiv.innerHTML = `
+        <span>${item.quantity}x ${item.flavor}</span>
+        <span>₦${item.totalPrice}</span>
+        <span class="remove-item" onclick="removeItem(${item.id})">×</span>
+      `;
+      cartItemsPreview.appendChild(itemDiv);
+    });
+
+    cartPreviewAmount.textContent = `₦${total}`;
+    cartCount.textContent = cartItems.length;
+  }
+
+  // Remove item from cart
+  function removeItem(id) {
+    cartItems = cartItems.filter(item => item.id !== id);
+    updateCartDisplay();
+  }
+
+  // Show/hide cart preview
+  document.getElementById('cart-icon').addEventListener('click', () => {
+    const cartPreview = document.getElementById('cart-preview');
+    cartPreview.style.display = cartPreview.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // Checkout handler
+  document.querySelector('.checkout-btn').addEventListener('click', () => {
+    if (cartItems.length === 0) {
+      alert('Your cart is empty!');
+      return;
+    }
+    alert('Proceeding to payment...');
+    window.location.href = 'paymentoption.html';
+  });
+</script>
+
+    <div style="text-align: center; padding: 0px 20px; margin: 0px 0;">
+        <h2 style="font-family: 'Arial', sans-serif; color: #000000; margin-bottom: 15px; font-size: 1.5rem;">GET A BARISTA FOR YOUR EVENT</h2>
+        <p style="font-family: 'Arial', sans-serif; color: #000000; max-width: 800px; margin: 0 auto; line-height: 1.6;"> Get a barista for all your special events ranging from weddings to birthdays and corporate events. We have a team of experienced baristas who are dedicated to providing you with the best coffee experience.
+        </p>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <div class="card-content">
+                <div class="barista-image">
+                    <img src="barista.jpg" alt="Barista making coffee" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="barista-form">
+                    <h2>Book a Barista</h2>
+                    <form id="baristaForm">
+                        <div class="form-group">
+                            <label for="baristasCount">Number of Baristas:</label>
+                            <input type="number" id="baristasCount" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Flavors Available:</label>
+                            <div class="flavor-options">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="flavors" value="classic">
+                                    Classic
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="flavors" value="specialty">
+                                    Specialty
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="flavors" value="seasonal">
+                                    Seasonal
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eventAddress">Event Address/ Phone No:</label>
+                            <textarea id="eventAddress" rows="3" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eventDate">Event Date:</label>
+                            <input type="datetime-local" id="eventDate" required>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Book Barista</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .container {
+            margin: 20px auto;
+            max-width: 1200px;
+            padding: 0 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 550px;
+            margin: 0 auto;
+            padding: auto;
+        }
+
+        .card-content {
+            display: flex;
+            min-height: 500px;
+        }
+
+        .barista-image {
+            flex: 1;
+            overflow: hidden;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .barista-form {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .flavor-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="number"],
+        input[type="datetime-local"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background-color: #000000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #1a1a1b;
+        }
+
+        body {
+            background-image: url('banner10.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+    </style>
+
+    <script>
+        const baristaForm = document.getElementById('baristaForm');
+        
+        baristaForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Barista booking request submitted successfully!');
+            baristaForm.reset();
+        });
+    </script>
+ </div>
+ <style>
+     .coffee-bean {
+         position: absolute;
+         width: 20px;
+         height: 12px;
+         background: #4A2C2A;
+         border-radius: 50%;
+         opacity: 0.3;
+         pointer-events: none;
+     }
+
+     .coffee-bean:before {
+         content: '';
+         position: absolute;
+         top: 50%;
+         left: 50%;
+         width: 60%;
+         height: 2px;
+         background: #2c1810;
+         transform: translate(-50%, -50%);
+     }
+ </style>
+
+ <script>
+     function createCoffeeBean() {
+         const bean = document.createElement('div');
+         bean.className = 'coffee-bean';
+         
+         // Random starting position
+         bean.style.left = Math.random() * window.innerWidth + 'px';
+         bean.style.top = '-30px';
+         
+         // Random rotation
+         const rotation = Math.random() * 360;
+         bean.style.transform = `rotate(${rotation}deg)`;
+         
+         document.body.appendChild(bean);
+         
+         // Animation
+         const duration = 5000 + Math.random() * 5000; // 5-10 seconds
+         const horizontalMovement = (Math.random() - 0.5) * 200; // Random horizontal drift
+         
+         bean.animate([
+             { transform: `rotate(${rotation}deg) translate(0, 0)` },
+             { transform: `rotate(${rotation + 360}deg) translate(${horizontalMovement}px, ${window.innerHeight + 30}px)` }
+         ], {
+             duration: duration,
+             easing: 'ease-in-out'
+         }).onfinish = () => {
+             document.body.removeChild(bean);
+         };
+     }
+
+     // Create new beans periodically
+     setInterval(createCoffeeBean, 300);
+
+     // Initial beans
+     for(let i = 0; i < 10; i++) {
+         setTimeout(createCoffeeBean, i * 200);
+     }
+ </script>
+ <style>
+     .chat-box {
+         position: fixed;
+         bottom: 30px;
+         right: 30px;
+         background-color: #000000;
+         color: white;
+         padding: 15px 25px;
+         border-radius: 25px;
+         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+         cursor: pointer;
+         font-family: Arial, sans-serif;
+         z-index: 1000;
+         transition: transform 0.3s ease;
+     }
+
+     .chat-box:hover {
+         transform: translateY(-5px);
+         background-color: #333333;
+     }
+ </style>
+
+ <div class="chat-box">
+     Talk to us
+ </div>
+ <style>
+     .chat-popup {
+         display: none;
+         position: fixed;
+         bottom: 90px;
+         right: 30px;
+         width: 300px;
+         height: 400px;
+         background: white;
+         border-radius: 10px;
+         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+         z-index: 1000;
+         overflow: hidden;
+         flex-direction: column;
+     }
+
+     .chat-header {
+         background: #000000;
+         color: white;
+         padding: 15px;
+         font-family: Arial, sans-serif;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+     }
+
+     .close-chat {
+         cursor: pointer;
+         font-size: 20px;
+     }
+
+     .chat-messages {
+         flex-grow: 1;
+         padding: 15px;
+         overflow-y: auto;
+         display: flex;
+         flex-direction: column;
+         gap: 10px;
+     }
+
+     .message {
+         max-width: 80%;
+         padding: 10px;
+         border-radius: 10px;
+         margin: 5px 0;
+     }
+
+     .bot-message {
+         background: #f0f0f0;
+         align-self: flex-start;
+     }
+
+     .user-message {
+         background: #000000;
+         color: white;
+         align-self: flex-end;
+     }
+
+     .chat-input {
+         display: flex;
+         padding: 15px;
+         border-top: 1px solid #eee;
+     }
+
+     .chat-input input {
+         flex-grow: 1;
+         padding: 8px;
+         border: 1px solid #ddd;
+         border-radius: 20px;
+         margin-right: 10px;
+     }
+
+     .chat-input button {
+         background: #000000;
+         color: white;
+         border: none;
+         padding: 8px 15px;
+         border-radius: 20px;
+         cursor: pointer;
+     }
+ </style>
+
+ <div class="chat-popup">
+     <div class="chat-header">
+         <span>Chat with us</span>
+         <span class="close-chat">&times;</span>
+     </div>
+     <div class="chat-messages">
+         <div class="message bot-message">Hello! How can I help you today?</div>
+     </div>
+     <div class="chat-input">
+         <input type="text" placeholder="Type your message...">
+         <button>Send</button>
+     </div>
+ </div>
+
+ <script>
+     document.querySelector('.chat-box').addEventListener('click', () => {
+         document.querySelector('.chat-popup').style.display = 'flex';
+     });
+
+     document.querySelector('.close-chat').addEventListener('click', () => {
+         document.querySelector('.chat-popup').style.display = 'none';
+     });
+
+     const chatMessages = document.querySelector('.chat-messages');
+     const chatInput = document.querySelector('.chat-input input');
+     const sendButton = document.querySelector('.chat-input button');
+
+     function addMessage(message, isUser = false) {
+         const messageDiv = document.createElement('div');
+         messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+         messageDiv.textContent = message;
+         chatMessages.appendChild(messageDiv);
+         chatMessages.scrollTop = chatMessages.scrollHeight;
+     }
+
+     function getBotResponse(message) {
+     const responses = {
+         'hello': 'Hi there! How can I assist you today?',
+         'hi': 'Hello! How can I help you?',
+         'hours': 'We are open Monday to Friday 7am-8pm, Saturday and Sunday 8am-6pm.',
+         'location': 'We are located at 123 Coffee Street, Downtown.',
+         'menu': 'You can check our full menu on our website under the Menu section.',
+         'reservation': 'You can make a reservation by calling us at (555) 123-4567.',
+         'default': "I'm not sure about that. Would you like to speak with a human representative?",
+         'order': 'You can order online or by calling us at 08144854795.',
+         'payment': 'You can pay for your order online or by calling us at 08144854795 or by visiting our location or by bank transfer.',
+         'tell me more about your coffee': 'Our coffee is made with the finest beans and the best quality coffee in the world.',
+         'Whats on your menu': 'we make of coffee ranging from 1000 to 1500 naira for regular coffee and 2500 to 4000 naira for extra creamy coffee with different flavors.',
+         'Do you have a cappuchino  ': 'Yes we do, it is 2500 naira',
+         'Do you have a latte': 'Yes we do, it is 2000 naira',
+         'Do you have a mocha': 'Yes we do, it is 2200 naira',
+         'Do you have a americano': 'Yes we do, it is 1800 naira',
+         'Do you have a caffe latte': 'Yes we do, it is 2200 naira',
+         'Do you have a caffe mocha': 'Yes we do, it is 2500 naira',
+         'How do i order': 'You can order online on www.citypremiumcafe.com or by calling us at 08144854795.',
+         'How do i pay': 'You can pay for your order online or by calling us at 08144854795 or by visiting our location or by bank transfer.',
+         'Do you have a cappuchino': 'Yes we do, it is 2500 naira',
+         'Do you have a latte': 'Yes we do, it is 2000 naira',
+         'Do you have a mocha': 'Yes we do, it is 2200 naira',
+         'Do you have a americano': 'Yes we do, it is 1800 naira',
+         'Do you have a caffe latte': 'Yes we do, it is 2200 naira',
+         'Do you have a caffe mocha': 'Yes we do, it is 2500 naira',
+         'Do you have a cappuchino': 'Yes we do, it is 2500 naira',
+         'Do you have a latte': 'Yes we do, it is 2000 naira',
+         'Do you have a mocha': 'Yes we do, it is 2200 naira',
+         'Do you have a americano': 'Yes we do, it is 1800 naira',
+         'Do you have any snacks to go along with your coffee': 'Yes we do, we have a variety of snacks to go along with your coffee.',
+         'Do you have any desserts to go along with your coffee': 'Yes we do, we have a variety of desserts to go along with your coffee.',
+         'Do you have any sandwiches to go along with your coffee': 'Yes we do, we have a variety of sandwiches to go along with your coffee.',
+         'Do you have any salads to go along with your coffee': 'Yes we do, we have a variety of salads to go along with your coffee.',
+         'Do you have any soups to go along with your coffee': 'Yes we do, we have a variety of soups to go along with your coffee.',
+         'Do you have any desserts to go along with your coffee': 'Yes we do, we have a variety of desserts to go along with your coffee.',
+         'How do i make a reservation': 'You can make a reservation by calling us at 08144854795.',
+         'How do i cancel a reservation': 'You can cancel a reservation by calling us at 08144854795.',
+         'How do i change a reservation': 'You can change a reservation by calling us at 08144854795.',
+         'How do i check my reservation': 'You can check your reservation by calling us at 08144854795.',
+         'How do i cancel my reservation': 'You can cancel your reservation by calling us at 08144854795.',
+         'How do i request a booking': 'You can request a booking for barista by calling us at 08144854795.',
+         'How do i request a booking for barista': 'You can request a booking for barista by calling us at 08144854795.',
+         'How do i request a booking for barista': 'You can request a booking for barista by calling us at 08144854795.',
+         'How do i request a booking for barista': 'You can request a booking for barista by calling us at 08144854795.',
+         'How do i request a booking for barista': 'You can request a booking for barista by calling us at 08144854795.',
+         'How do i request a booking for barista': 'You can request a booking for barista by calling us at 08144854795.',
+         'How do i request a booking for barista': 'You can request a booking for barista by calling us at 08144854795.',
+         'what are your opening hours': 'We are open Monday to Friday 7am-8pm, Saturday and Sunday 8am-6pm.',
+         'when are you open': 'We are open Monday to Friday 7am-8pm, Saturday and Sunday 8am-6pm.',
+         'what time do you open': 'We open at 7am Monday-Friday, and 8am on weekends.',
+         'what time do you close': 'We close at 8pm Monday-Friday, and 6pm on weekends.',
+         'where are you located': 'We are located at No 3 Sab Ojewale Street Gbagada, Lagos, Nigeria.',
+         'what is your address': 'Our address is No 3 Sab Ojewale Street Gbagada, Lagos, Nigeria.',
+         'how can i contact you': 'You can reach us at 08144854795 or email us at info@citypremiumcafe.com',
+         'what is your phone number': 'Our phone number is 08144854795',
+         'what is your email': 'Our email is info@citypremiumcafe.com',
+         'do you do deliveries': 'Yes, we offer delivery services. You can place your order online or call us at 08144854795.',
+         'what payment methods do you accept': 'We accept cash, bank transfers, and online payments.',
+         'do you take reservations': 'Yes, you can make a reservation by calling us at 08144854795.',
+         'what are your prices': 'Our regular coffee ranges from ₦1000 to ₦1500, and our premium creamy coffee ranges from ₦2500 to ₦4000.',
+         'do you have wifi': 'Yes, we offer free WiFi to our customers.',
+         'is parking available': 'Yes, we have free parking available for our customers.',
+         'do you have outdoor seating': 'Yes, we have a beautiful outdoor seating area.',
+         'are you on social media': 'Yes! Follow us on Instagram @artandjive',
+         'what makes your coffee special': 'We use premium quality coffee beans and our baristas are highly trained professionals.',
+         'do you cater for events': 'Yes, we offer catering services for events. Please call 08144854795 for details.',
+         'do you have gift cards': 'Yes, we offer gift cards which can be purchased in-store.',
+         'are you hiring': 'Please send your CV to info@citypremiumcafe.com for any job opportunities.',
+         'what food do you serve': 'We serve a variety of snacks, sandwiches, salads, soups, and desserts to complement our coffee.',
+         'do you have vegan options': 'Yes, we offer several vegan-friendly beverages and food options.',
+         'what is your most popular drink': 'Our Cappuccino and Caffe Mocha are customer favorites.',
+         'do you sell coffee beans': 'Yes, we sell premium coffee beans that you can brew at home.',
+         'do you have a loyalty program': 'Yes, join our loyalty program to earn points and get free drinks!',
+         'what is your specialty coffee': 'Our specialty is our premium creamy coffee with various flavor options.',
+         'do you have decaf options': 'Yes, we offer decaf versions of most of our coffee drinks.',
+         'can i book for a private event': 'Yes, please call 08144854795 to discuss private event bookings.',
+         'do you have student discounts': 'Yes, we offer a 10% discount to students with valid ID.',
+         'what is your busiest time': 'We are usually busiest during morning hours (7am-10am) and lunch time (12pm-2pm).'
+         };
+
+         message = message.toLowerCase();
+         for (let key in responses) {
+             if (message.includes(key)) {
+                 return responses[key];
+             }
+         }
+         return responses.default;
+     }
+
+     function handleMessage() {
+         const message = chatInput.value.trim();
+         if (message) {
+             addMessage(message, true);
+             chatInput.value = '';
+             
+             // Simulate bot typing
+             setTimeout(() => {
+                 const botResponse = getBotResponse(message);
+                 addMessage(botResponse);
+             }, 1000);
+         }
+     }
+
+     sendButton.addEventListener('click', handleMessage);
+     chatInput.addEventListener('keypress', (e) => {
+         if (e.key === 'Enter') {
+             handleMessage();
+         }
+     });
+ </script>
+<style>
+ .footer {
+     width: 100%;
+     background-color: #000000;
+     color: white;
+     padding: 40px 0;
+     margin-top: 50px;
+ }
+
+ .footer-content {
+     max-width: 1200px;
+     margin: 0 auto;
+     display: grid;
+     grid-template-columns: repeat(4, 1fr);
+     gap: 30px;
+     padding: 0 20px;
+ }
+
+ .footer-section {
+     margin-bottom: 20px;
+ }
+
+ .footer-section h3 {
+     color: #fff;
+     font-size: 18px;
+     margin-bottom: 15px;
+     font-family: Arial, sans-serif;
+ }
+
+ .footer-section p {
+     font-size: 14px;
+     line-height: 1.6;
+     color: #ccc;
+ }
+
+ .social-links a {
+     color: white;
+     margin-right: 15px;
+     font-size: 20px;
+     text-decoration: none;
+ }
+
+ .social-links a:hover {
+     color: #ddd;
+ }
+
+ .contact-info {
+     list-style: none;
+     padding: 0;
+ }
+
+ .contact-info li {
+     margin-bottom: 10px;
+     color: #ccc;
+ }
+</style>
+
+<footer class="footer">
+ <div class="footer-content">
+     <div class="footer-section">
+         <h3>Our Mission</h3>
+         <p>To provide exceptional coffee experiences while fostering community connections through quality beverages and outstanding service.</p>
+     </div>
+     
+     <div class="footer-section">
+         <h3>Our Vision</h3>
+         <p>To become the most beloved coffee destination, known for our commitment to quality, sustainability, and creating memorable moments.</p>
+     </div>
+     
+     <div class="footer-section">
+         <h3>Contact Us</h3>
+         <ul class="contact-info">
+             <li>📞 Phone: (234) 8144854795</li>
+             <li>✉️ Email: info@citypremiumcafe.com</li>
+             <li>🏢 Address: No 3 Sab Ojewale Street Gbagada</li>
+             <li>Lagos, Nigeria. 100001 </li>
+         </ul>
+     </div>
+     
+     <div class="footer-section">
+         <h3>Follow Us</h3>
+         <div class="social-links">
+             <a href="#"><i class="fab fa-facebook"></i> Facebook</a><br>
+             <a href="#"><i class="fab fa-twitter"></i> Twitter</a><br>
+             <a href="#"><i class="fab fa-instagram"></i> Instagram</a><br>
+             <a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a>
+         </div>
+     </div>
+     <style>
+         .coffee-animation {
+             position: fixed;
+             bottom: 20px;
+             left: 20px;
+             width: 100px;
+             height: 150px;
+             z-index: 1000;
+         }
+     
+         .coffee-cup {
+             position: absolute;
+             bottom: 0;
+             width: 80px;
+             height: 100px;
+             background: #fff;
+             border: 4px solid #333;
+             border-radius: 5px 5px 40px 40px;
+             overflow: hidden;
+         }
+     
+         .coffee-liquid {
+             position: absolute;
+             bottom: 0;
+             width: 100%;
+             height: 0%;
+             background: linear-gradient(to bottom, #6f4e37, #4a332d);
+             animation: fillCup 3s ease-in-out infinite;
+         }
+     
+         .coffee-stream {
+             position: absolute;
+             top: -50px;
+             left: 50%;
+             transform: translateX(-50%);
+             width: 8px;
+             height: 50px;
+             background: linear-gradient(to bottom, transparent, #6f4e37);
+             animation: pourCoffee 3s ease-in-out infinite;
+         }
+     
+         .steam {
+             position: absolute;
+             top: -20px;
+             left: 10px;
+             width: 8px;
+             height: 20px;
+             background: rgba(255, 255, 255, 0.5);
+             border-radius: 20px;
+             filter: blur(5px);
+             animation: steam 2s ease-out infinite;
+         }
+     
+         @keyframes fillCup {
+             0% { height: 0%; }
+             70% { height: 80%; }
+             100% { height: 80%; }
+         }
+     
+         @keyframes pourCoffee {
+             0% { height: 0px; opacity: 0; }
+             20% { height: 50px; opacity: 1; }
+             70% { height: 50px; opacity: 1; }
+             100% { height: 0px; opacity: 0; }
+         }
+     
+         @keyframes steam {
+             0% { transform: translateY(0) scale(1); opacity: 0; }
+             50% { transform: translateY(-10px) scale(1.2); opacity: 0.5; }
+             100% { transform: translateY(-20px) scale(1.4); opacity: 0; }
+         }
+     </style>
+     
+     <div class="coffee-animation">
+         <div class="coffee-cup">
+             <div class="coffee-liquid"></div>
+         </div>
+         <div class="coffee-stream"></div>
+         <div class="steam" style="left: 20px; animation-delay: 0.2s;"></div>
+         <div class="steam" style="left: 35px; animation-delay: 0.6s;"></div>
+         <div class="steam" style="left: 50px; animation-delay: 0.4s;"></div>
+     </div>
+     
+     <script>
+         // Add subtle random movement to make it more realistic
+         document.addEventListener('DOMContentLoaded', function() {
+             const steam = document.querySelectorAll('.steam');
+             
+             function addRandomMovement(element) {
+                 setInterval(() => {
+                     const randomX = (Math.random() - 0.5) * 10;
+                     element.style.transform = `translateX(${randomX}px) translateY(-20px) scale(1.4)`;
+                 }, 100);
+             }
+     
+             steam.forEach(s => addRandomMovement(s));
+         });
+     </script>
+     
+</body>
+</html>
